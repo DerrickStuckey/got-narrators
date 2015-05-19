@@ -3,15 +3,10 @@ __author__ = 'dstuckey'
 import parse_chapters
 import prediction_utils as pu
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.feature_extraction.text import HashingVectorizer
-from sklearn.feature_selection import SelectKBest, chi2
-from sklearn.svm import SVC
-
 from sklearn.metrics import classification_report
-
-import numpy as np
-from random import shuffle
+from sklearn.metrics import precision_score
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import recall_score
 
 book_filenames = ['raw_text/#1A Game of Thrones.txt',
                   'raw_text/#2A Clash of Kings.txt',
@@ -23,11 +18,13 @@ chapters = []
 
 narrators = ['ARYA','JON','SANSA','TYRION']
 
+num_trials = 10
+
 for book_filename in book_filenames:
     cur_chapters = parse_chapters.parse_chapters(book_filename)
     chapters = chapters + cur_chapters
 
-train_chapters, test_chapters = pu.partition(chapters, test_prop=0.3)
+train_chapters, test_chapters = pu.partition(chapters, test_prop=0.3, randomize=False)
 contents_train = [x.content for x in train_chapters]
 contents_test = [x.content for x in test_chapters]
 
@@ -38,11 +35,16 @@ for narrator in narrators:
     y_train = pu.extract_y(train_chapters, narrator)
     y_test = pu.extract_y(test_chapters, narrator)
 
-    preds, selected_features = pu.classify(contents_train, y_train, contents_test)
+    preds, selected_features, clf = pu.svm_classify(contents_train, y_train, contents_test,k=2000)
+    # preds, selected_features, clf = pu.nb_classify(contents_train, y_train, contents_test,k=1000)
+
+    coefs = clf.coef_
 
     print(classification_report(y_test, preds))
 
     print "selected features: "
-    for feature in selected_features:
-        print str(feature)
+    print selected_features
+    # for (feature,coef) in zip(selected_features,coefs):
+    #     print str(feature), ": ", coef
+
 

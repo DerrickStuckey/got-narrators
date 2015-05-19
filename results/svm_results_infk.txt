@@ -1,0 +1,98 @@
+/System/Library/Frameworks/Python.framework/Versions/2.7/bin/python2.7 /Users/dstuckey/Desktop/GW/NLP/GoT/run_predictions_dbg.py
+
+
+
+Narrator:  ARYA
+tfidf vector length:  220
+X_train_array[0] length:  21027
+coefs len:  1
+coefs[0] len:  21000
+             precision    recall  f1-score   support
+
+          0       1.00      1.00      1.00        85
+          1       1.00      1.00      1.00        10
+
+avg / total       1.00      1.00      1.00        95
+
+top positive features: 
+[(u'arya', 1.4526513258535485), (u'gendry', 0.86459366620580869), (u'needle', 0.75107954882937744), (u'yoren', 0.6459415467064975), (u'syrio', 0.63721110157021099), (u'aryas', 0.59299821848796308), (u'pie', 0.5868619878114858), (u'jaqen', 0.58381250084789871), (u'shed', 0.51685833491569344), (u'lem', 0.50445827172803948)]
+top negative features: 
+[(u'wildlings', -0.19485543091149246), (u'jojen', -0.19663497283067286), (u'sam', -0.19863774577317994), (u'uncle', -0.199597986429255), (u'stannis', -0.20047271064724015), (u'meera', -0.21468477196720367), (u'brienne', -0.22762547993015156), (u'hodor', -0.24964644860123172), (u'jaime', -0.32595212634870663), (u'tyrion', -0.37769918858371115)]
+
+
+
+Narrator:  JON
+tfidf vector length:  220
+X_train_array[0] length:  21027
+coefs len:  1
+coefs[0] len:  21000
+             precision    recall  f1-score   support
+
+          0       0.99      0.96      0.98        82
+          1       0.80      0.92      0.86        13
+
+avg / total       0.96      0.96      0.96        95
+
+top positive features: 
+[(u'ghost', 0.93728491964424787), (u'snow', 0.85270394985188025), (u'rangers', 0.8177606287800071), (u'wildlings', 0.75758440471390454), (u'ygritte', 0.70293420892055858), (u'mance', 0.63001097691111885), (u'jons', 0.62348045030803734), (u'magnar', 0.56824518324671525), (u'noye', 0.56319570031525734), (u'tormund', 0.55173725296728782)]
+top negative features: 
+[(u'hound', -0.19829085506532981), (u'dragons', -0.20058548708716373), (u'joffrey', -0.20164872600716768), (u'jojen', -0.21218941578904832), (u'dany', -0.21866320258947314), (u'meera', -0.23121986529568833), (u'jaime', -0.23843838929761596), (u'luwin', -0.23854381302310432), (u'tyrion', -0.24840383561518792), (u'hodor', -0.32527425975485508)]
+
+
+
+Narrator:  SANSA
+tfidf vector length:  220
+X_train_array[0] length:  21027
+coefs len:  1
+coefs[0] len:  21000
+             precision    recall  f1-score   support
+
+          0       0.98      1.00      0.99        89
+          1       1.00      0.67      0.80         6
+
+avg / total       0.98      0.98      0.98        95
+
+top positive features: 
+[(u'sansa', 1.2590656714220059), (u'dontos', 1.1765770980658743), (u'joffrey', 0.71491844479550859), (u'joff', 0.68884016971632289), (u'lothor', 0.56865828001322161), (u'sansas', 0.55599338910115459), (u'brune', 0.53847014181134067), (u'florian', 0.48338544308304598), (u'jonquil', 0.46545651581670788), (u'hound', 0.46248699378236141)]
+top negative features: 
+[(u'needs', -0.1433645847708577), (u'cell', -0.1474827747319), (u'offered', -0.14871775939952364), (u'dany', -0.15188210444532702), (u'winter', -0.15659908877840259), (u'neds', -0.15831267431721449), (u'damn', -0.1644132476536066), (u'waters', -0.17597443455672951), (u'brienne', -0.21924718186213768), (u'ned', -0.37118774727845982)]
+
+
+
+Narrator:  TYRION
+tfidf vector length:  220
+X_train_array[0] length:  21027
+coefs len:  1
+coefs[0] len:  21000
+             precision    recall  f1-score   support
+
+          0       0.98      1.00      0.99        87
+          1       1.00      0.75      0.86         8
+
+avg / total       0.98      0.98      0.98        95
+
+top positive features: 
+[(u'tyrion', 2.3193488794602541), (u'bronn', 1.2790374883233524), (u'shae', 1.0903622136917746), (u'tyrions', 0.93117407787359607), (u'dwarf', 0.79509345820663768), (u'pod', 0.77793445846894771), (u'shagga', 0.69795302465578668), (u'varys', 0.66924251838457915), (u'jacelyn', 0.58802060317870108), (u'whore', 0.54369903669313524)]
+top negative features: 
+[(u'qyburn', -0.28593596832899226), (u'dontos', -0.29292010752252234), (u'sansa', -0.29906674042086145), (u'neds', -0.33417654445785144), (u'sam', -0.33498967386392664), (u'wench', -0.33963646387662094), (u'dany', -0.45077765226016631), (u'arya', -0.46994092883349781), (u'ned', -0.50214386179117587), (u'brienne', -0.51096917773953443)]
+
+
+
+Narrator:  DAENERYS
+tfidf vector length:  220
+X_train_array[0] length:  21027
+coefs len:  1
+coefs[0] len:  21000
+             precision    recall  f1-score   support
+
+          0       1.00      1.00      1.00        84
+          1       1.00      1.00      1.00        11
+
+avg / total       1.00      1.00      1.00        95
+
+top positive features: 
+[(u'dany', 1.3285283535223533), (u'drogo', 0.64949750201463496), (u'khal', 0.62541068410266543), (u'dothraki', 0.60115725659021568), (u'jorah', 0.59142439702438354), (u'irri', 0.56552651973715573), (u'khaleesi', 0.56092114156932626), (u'daenerys', 0.53575061221162912), (u'daario', 0.51774573444456073), (u'jhiqui', 0.51354243969908819)]
+top negative features: 
+[(u'cersei', -0.14138834438114273), (u'catelyn', -0.14400447369825184), (u'sansa', -0.14409543695222868), (u'dwarf', -0.1451694654071761), (u'snow', -0.15740242834792695), (u'ned', -0.15938261323519001), (u'stannis', -0.16574411149067034), (u'jaime', -0.18018045106091973), (u'bran', -0.18977982860708925), (u'tyrion', -0.25155396852442108)]
+
+Process finished with exit code 0

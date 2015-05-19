@@ -44,6 +44,9 @@ def classify(clf, chapter_contents_train, y_train, chapter_contents_test,k=20):
 
     vectorizer = TfidfVectorizer(sublinear_tf=True, max_df=0.5,stop_words='english')
     X_train = vectorizer.fit_transform(chapter_contents_train)
+    X_train_array = X_train.toarray()
+    print "tfidf vector length: ", len(X_train_array) #dbg
+    print "X_train_array[0] length: ", len(X_train_array[0]) #dbg
 
     ch2 = SelectKBest(chi2, k=k)
     X_train = ch2.fit_transform(X_train, y_train)

@@ -16,7 +16,7 @@ book_filenames = ['raw_text/#1A Game of Thrones.txt',
 
 chapters = []
 
-narrators = ['ARYA','JON','SANSA','TYRION']
+narrators = ['ARYA','JON','SANSA','TYRION','DAENERYS']
 
 num_trials = 10
 
@@ -38,13 +38,24 @@ for narrator in narrators:
     preds, selected_features, clf = pu.svm_classify(contents_train, y_train, contents_test,k=2000)
     # preds, selected_features, clf = pu.nb_classify(contents_train, y_train, contents_test,k=1000)
 
-    coefs = clf.coef_
+    coefs = clf.coef_.toarray()
+
+    print "coefs len: ", len(coefs)
+    print "coefs[0] len: ", len(coefs[0])
+
+    class_1_coefs = coefs[0]
 
     print(classification_report(y_test, preds))
 
-    print "selected features: "
-    print selected_features
-    # for (feature,coef) in zip(selected_features,coefs):
+    # print "selected features: "
+    # # print selected_features
+    # for (feature,coef) in zip(selected_features,class_1_coefs):
     #     print str(feature), ": ", coef
 
+    weighted_features = zip(selected_features,class_1_coefs)
+    sorted_features = sorted(weighted_features, key=lambda x: x[1], reverse=True)
+    print "top positive features: "
+    print sorted_features[:10]
 
+    print "top negative features: "
+    print [x for x in sorted_features if x[1] < 0][-10:]

@@ -65,3 +65,6 @@ for narrator in narrators:
     print [x for x in sorted_features if x[1] < 0][-10:]
 
     write_narrator_features(narrator, sorted_features)
+
+    write_narrator_features(narrator + "_highest", sorted_features[:20])
+    write_narrator_features(narrator + "_lowest", sorted_features[-20:])

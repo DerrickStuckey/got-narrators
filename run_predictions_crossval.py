@@ -19,51 +19,36 @@ book_filenames = ['raw_text/#1A Game of Thrones.txt',
 chapters = []
 
 # narrators = ['ARYA','JON','SANSA','TYRION','DAENERYS','CERSEI','JAIME']
+
+#larger set of narrators:
 narrators = ['ARYA','JON','SANSA','TYRION','DAENERYS','CERSEI','JAIME','BRAN','DAVOS','THEON','SAMWELL','EDDARD','BRIENNE']
 
-crossval_k = 10
+crossval_k = 5
 
-# trial_num should range from 0 to crossval_k-1
-def crossval_split(data, crossval_k, trial_num):
-    chunk_size = int(len(data)/crossval_k)
-
-    start_idx = trial_num*chunk_size
-    stop_idx = (trial_num+1)*chunk_size
-    # print start_idx
-    # print stop_idx
-    test_chapters = data[start_idx:stop_idx]
-    train_chapters_1 = data[:start_idx]
-    train_chapters_2 = data[stop_idx:]
-    #dbg
-    # print "train_1 len: ", len(train_chapters_1)
-    # print "train_2 len: ", len(train_chapters_2)
-    train_chapters = train_chapters_1 + train_chapters_2
-    return train_chapters, test_chapters
-
-#test
-# chapters = [1,2,3,4,5,6,7,8,9,10]
-# train, test = crossval_split(chapters, 5, 1)
-# exit()
-
+# parse all books into chapters
 for book_filename in book_filenames:
     cur_chapters = parse_chapters.parse_chapters(book_filename)
     chapters = chapters + cur_chapters
 
-# randomize chapters order
+# randomize chapters order (using set seed to compare over multiple runs)
+seed(11235)
 shuffle(chapters)
 
+#dictionaries holding a list for each narrator of performance metrics over trials
 #narrator names are keys
 accuracy_vals = {}
 precision_vals = {}
 recall_vals = {}
 
+#initialize dictionary lists for each narrator
 for narrator in narrators:
     accuracy_vals[narrator] = []
     precision_vals[narrator] = []
     recall_vals[narrator] = []
 
+# train and test classifier for each train/test split over k folds
 for trial_num in range(0,crossval_k,1):
-    train_chapters, test_chapters = crossval_split(chapters, crossval_k, trial_num)
+    train_chapters, test_chapters = pu.crossval_split(chapters, crossval_k, trial_num)
     contents_train = [x.content for x in train_chapters]
     contents_test = [x.content for x in test_chapters]
 
@@ -74,31 +59,13 @@ for trial_num in range(0,crossval_k,1):
         y_train = pu.extract_y(train_chapters, narrator)
         y_test = pu.extract_y(test_chapters, narrator)
 
-        # preds, selected_features, clf = pu.svm_classify(contents_train, y_train, contents_test,k=2000)
-        # coefs = clf.coef_.toarray()
+        # SVM classifier
+        preds, selected_features, clf = pu.svm_classify(contents_train, y_train, contents_test,k=2000)
 
-        preds, selected_features, clf = pu.nb_classify(contents_train, y_train, contents_test,k=2000)
-        # coefs = clf.feature_log_prob_
-
-        # print "coefs len: ", len(coefs)
-        # print "coefs[0] len: ", len(coefs[0])
-
-        # class_1_coefs = coefs[-1]
+        # Naive Bayes classifier
+        # preds, selected_features, clf = pu.nb_classify(contents_train, y_train, contents_test,k=2000)
 
         print(classification_report(y_test, preds))
-
-        # print "selected features: "
-        # # print selected_features
-        # for (feature,coef) in zip(selected_features,class_1_coefs):
-        #     print str(feature), ": ", coef
-
-        # weighted_features = zip(selected_features,class_1_coefs)
-        # sorted_features = sorted(weighted_features, key=lambda x: x[1], reverse=True)
-        # print "top positive features: "
-        # print sorted_features[:10]
-        #
-        # print "top negative features: "
-        # print [x for x in sorted_features if x[1] < 0][-10:]
 
         accuracy = accuracy_score(y_test, preds)
         precision = precision_score(y_test, preds, pos_label=1)

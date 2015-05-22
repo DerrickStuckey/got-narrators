@@ -8,7 +8,19 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import recall_score
 from random import shuffle, seed
+import csv
 
+classifier_type = "svm"
+
+output_dir = "./results"
+
+def write_narrator_features(classifier_type, crossval_k, narrator_scores):
+    output_filename = output_dir + "/" + classifier_type + "_" + str(crossval_k) + "_fold_scores.csv"
+    with open(output_filename, 'w') as output_file:
+        writer = csv.writer(output_file)
+        writer.writerow(['pov_character','accuracy','precision','recall'])
+        for (narrator,accuracy,precision,recall) in narrator_scores:
+            writer.writerow([narrator,accuracy,precision,recall])
 
 book_filenames = ['raw_text/#1A Game of Thrones.txt',
                   'raw_text/#2A Clash of Kings.txt',
@@ -21,9 +33,9 @@ chapters = []
 # narrators = ['ARYA','JON','SANSA','TYRION','DAENERYS','CERSEI','JAIME']
 
 #larger set of narrators:
-narrators = ['ARYA','JON','SANSA','TYRION','DAENERYS','CERSEI','JAIME','BRAN','DAVOS','THEON','SAMWELL','EDDARD','BRIENNE']
+narrators = ['ARYA','JON','SANSA','TYRION','DAENERYS','CERSEI','JAIME','BRAN','DAVOS','SAMWELL','EDDARD','BRIENNE']
 
-crossval_k = 5
+crossval_k = 3
 
 # parse all books into chapters
 for book_filename in book_filenames:
@@ -59,11 +71,12 @@ for trial_num in range(0,crossval_k,1):
         y_train = pu.extract_y(train_chapters, narrator)
         y_test = pu.extract_y(test_chapters, narrator)
 
-        # SVM classifier
-        preds, selected_features, clf = pu.svm_classify(contents_train, y_train, contents_test,k=2000)
-
-        # Naive Bayes classifier
-        # preds, selected_features, clf = pu.nb_classify(contents_train, y_train, contents_test,k=2000)
+        if classifier_type == "svm":
+            # SVM classifier
+            preds, selected_features, clf = pu.svm_classify(contents_train, y_train, contents_test,k=2000)
+        elif classifier_type == "nb":
+            # Naive Bayes classifier
+            preds, selected_features, clf = pu.nb_classify(contents_train, y_train, contents_test,k=2000)
 
         print(classification_report(y_test, preds))
 
@@ -83,3 +96,9 @@ for narrator in narrators:
     print "avg accuracy: ", mean(accuracy_vals[narrator])
     print "avg precision: ", mean(precision_vals[narrator])
     print "avg recall: ", mean(recall_vals[narrator])
+
+narrator_scores = []
+for narrator in narrators:
+    narrator_scores.append([narrator,mean(accuracy_vals[narrator]),mean(precision_vals[narrator]),mean(recall_vals[narrator])])
+
+write_narrator_features(classifier_type,crossval_k,narrator_scores)

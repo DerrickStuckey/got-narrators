@@ -10,11 +10,10 @@ from sklearn.metrics import recall_score
 from random import shuffle, seed
 import csv
 
-classifier_type = "svm"
-
 output_dir = "./results"
 
-def write_narrator_features(classifier_type, crossval_k, narrator_scores):
+# saves score summary to CSV
+def write_kfold_scores(classifier_type, crossval_k, narrator_scores):
     output_filename = output_dir + "/" + classifier_type + "_" + str(crossval_k) + "_fold_scores.csv"
     with open(output_filename, 'w') as output_file:
         writer = csv.writer(output_file)
@@ -58,47 +57,52 @@ for narrator in narrators:
     precision_vals[narrator] = []
     recall_vals[narrator] = []
 
-# train and test classifier for each train/test split over k folds
-for trial_num in range(0,crossval_k,1):
-    train_chapters, test_chapters = pu.crossval_split(chapters, crossval_k, trial_num)
-    contents_train = [x.content for x in train_chapters]
-    contents_test = [x.content for x in test_chapters]
-
-    # run for several narrators:
-    for narrator in narrators:
-        print "\n\n"
-        print "Narrator: ", narrator
-        y_train = pu.extract_y(train_chapters, narrator)
-        y_test = pu.extract_y(test_chapters, narrator)
-
-        if classifier_type == "svm":
-            # SVM classifier
-            preds, selected_features, clf = pu.svm_classify(contents_train, y_train, contents_test,k=2000)
-        elif classifier_type == "nb":
-            # Naive Bayes classifier
-            preds, selected_features, clf = pu.nb_classify(contents_train, y_train, contents_test,k=2000)
-
-        print(classification_report(y_test, preds))
-
-        accuracy = accuracy_score(y_test, preds)
-        precision = precision_score(y_test, preds, pos_label=1)
-        recall = recall_score(y_test, preds, pos_label=1)
-
-        accuracy_vals[narrator].append(accuracy)
-        precision_vals[narrator].append(precision)
-        recall_vals[narrator].append(recall)
-
+#calculates the mean of a list of numerical values
 def mean(x):
     return float(sum(x))/len(x)
 
-for narrator in narrators:
-    print narrator
-    print "avg accuracy: ", mean(accuracy_vals[narrator])
-    print "avg precision: ", mean(precision_vals[narrator])
-    print "avg recall: ", mean(recall_vals[narrator])
+# run for both SVM and Naive Bayes classifiers
+for classifier_type in ['svm', 'nb']:
+    # train and test classifier for each train/test split over k folds
+    for trial_num in range(0,crossval_k,1):
+        train_chapters, test_chapters = pu.crossval_split(chapters, crossval_k, trial_num)
+        contents_train = [x.content for x in train_chapters]
+        contents_test = [x.content for x in test_chapters]
 
-narrator_scores = []
-for narrator in narrators:
-    narrator_scores.append([narrator,mean(accuracy_vals[narrator]),mean(precision_vals[narrator]),mean(recall_vals[narrator])])
+        # run for several narrators:
+        for narrator in narrators:
+            print "\n\n"
+            print "Narrator: ", narrator
+            y_train = pu.extract_y(train_chapters, narrator)
+            y_test = pu.extract_y(test_chapters, narrator)
 
-write_narrator_features(classifier_type,crossval_k,narrator_scores)
+            if classifier_type == "svm":
+                # SVM classifier
+                preds, selected_features, clf = pu.svm_classify(contents_train, y_train, contents_test,k=2000)
+            elif classifier_type == "nb":
+                # Naive Bayes classifier
+                preds, selected_features, clf = pu.nb_classify(contents_train, y_train, contents_test,k=2000)
+
+            print(classification_report(y_test, preds))
+
+            accuracy = accuracy_score(y_test, preds)
+            precision = precision_score(y_test, preds, pos_label=1)
+            recall = recall_score(y_test, preds, pos_label=1)
+
+            accuracy_vals[narrator].append(accuracy)
+            precision_vals[narrator].append(precision)
+            recall_vals[narrator].append(recall)
+
+    for narrator in narrators:
+        print narrator
+        print "avg accuracy: ", mean(accuracy_vals[narrator])
+        print "avg precision: ", mean(precision_vals[narrator])
+        print "avg recall: ", mean(recall_vals[narrator])
+
+    #calculate summary scores for each narrator
+    narrator_scores = []
+    for narrator in narrators:
+        narrator_scores.append([narrator,mean(accuracy_vals[narrator]),mean(precision_vals[narrator]),mean(recall_vals[narrator])])
+
+    #save summary to csv
+    write_kfold_scores(classifier_type,crossval_k,narrator_scores)

@@ -15,3 +15,12 @@ Executable script which runs parser for first 5 books of GoT series, trains SVM 
 
 **top_features.py**
 Executable script which runs parser for first 5 books of GoT series, trains an SVM classifier on the full corpus, and exports trained feature weights to a CSV file in 'results/features'.
+
+**raw_text**
+This directory holds the actual text of each of the first 5 GoT books.  The texts are not included in this repository for copyright reasons.
+
+**results**
+This directory contains CSV output for classifier performance.
+
+**results/features**
+This directory contains CSV output for feature weights used to determine character-word associations.
